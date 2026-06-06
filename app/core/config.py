@@ -25,7 +25,9 @@ class ConfigSettings(BaseSettings):
 
     SUPABASE_URL: str
     SUPABASE_KEY: str
-    SENTRY_DSN: Optional[str] = None
+    SENTRY_DSN: str
+
+    verify_api_key: str
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 

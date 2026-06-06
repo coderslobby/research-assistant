@@ -1,4 +1,4 @@
-from loguru import logger
+from app.core.logger import logger
 from app.core.exceptions import ResearchException, LLMException, DatabaseException
 from app.core.config import settings
 from tavily import TavilyClient

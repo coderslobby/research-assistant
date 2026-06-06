@@ -16,6 +16,7 @@ sqlalchemy
 asyncpg
 alembic
 psycopg2
+contextvars
 
 pytest
 pytest-asyncio

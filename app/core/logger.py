@@ -1,6 +1,10 @@
 import sys
 from loguru import logger
 from app.core.config import settings
+from contextvars import ContextVar
+
+trace_id_var = ContextVar("trace_id", default="system")
+logger = logger.patch(lambda record: record.update(trace_id=trace_id_var.get() or "-"))
 
 def setup_logger():
     logger.remove()
@@ -9,13 +13,13 @@ def setup_logger():
         logger.add(
             sys.stdout,
             level='DEBUG',
-            format='{time:YYYY-MM-DD HH:mm:ss} | {level} | {module}:{function}:{line} | {message}'
+            format='{trace_id} | {time:YYYY-MM-DD HH:mm:ss} | {level} | {module}:{function}:{line} | {message}'
         )
     else:
         logger.add(
             sys.stdout,
             level='INFO',
-            format='{time:YYYY-MM-DD HH:mm:ss} | {level} | {module}:{function}:{line} | {message}',
+            format='{trace_id} | {time:YYYY-MM-DD HH:mm:ss} | {level} | {module}:{function}:{line} | {message}',
             serialize=True
         )
     logger.add(

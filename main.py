@@ -2,10 +2,13 @@ import os
 import sentry_sdk
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from loguru import logger
 from app.core.config import settings
-from app.core.logger import setup_logger
+from app.core.logger import logger, setup_logger
 from api.routes import router
+from app.core.limiter import limiter
+from slowapi.errors import RateLimitExceeded
+from slowapi import _rate_limit_exceeded_handler
+from app.core.middleware import TraceIDMiddleware
 
 os.makedirs("logs", exist_ok=True)
 setup_logger()
@@ -36,7 +39,10 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+app.add_middleware(TraceIDMiddleware)
 app.include_router(router)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 @app.get("/health")
 async def health():

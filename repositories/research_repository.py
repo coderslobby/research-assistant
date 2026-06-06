@@ -1,7 +1,7 @@
 import httpx
 from app.core.config import settings
 from app.core.exceptions import DatabaseException
-from loguru import logger
+from app.core.logger import logger
 from typing import List, Optional
 
 from models import response
